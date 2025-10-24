@@ -158,7 +158,7 @@ export default function OTPPage() {
           
           // Redirect to home page after 2 seconds
           setTimeout(() => {
-            router.push('/user/home')
+            router.push('/user/dashboard')
           }, 2000)
         } else {
           toast.error('Invalid OTP for this user. Please try again.', {

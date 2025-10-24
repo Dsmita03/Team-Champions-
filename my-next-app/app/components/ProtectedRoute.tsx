@@ -33,7 +33,7 @@ export default function ProtectedRoute({ children, requireVerified = false }: Pr
 
         if (!isPresent) {
           // redirect to login if not authenticated
-          router.replace('/login')
+          router.replace('/user/login')
           return
         }
 
@@ -42,12 +42,12 @@ export default function ProtectedRoute({ children, requireVerified = false }: Pr
           try {
             const parsed = JSON.parse(userData)
             if (!parsed?.verified) {
-              router.replace('/login')
+              router.replace('/user/login')
               return
             }
           } catch (err) {
             // parsing error -> redirect
-            router.replace('/login')
+            router.replace('/user/login')
             return
           }
         }
@@ -55,7 +55,7 @@ export default function ProtectedRoute({ children, requireVerified = false }: Pr
         // all good
         setChecking(false)
       } catch (err) {
-        router.replace('/login')
+        router.replace('/user/login')
       }
     }
 
