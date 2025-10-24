@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/immutability */
 'use client'
 
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ChevronLeft, Delete } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import toast, { Toaster } from 'react-hot-toast'
@@ -14,6 +15,7 @@ export default function OTPPage() {
   const [timeLeft, setTimeLeft] = useState(55)
   const [userDetails, setUserDetails] = useState<{mobile: string, email: string, expectedOtp: string} | null>(null)
   const inputRefs = Array(4).fill(null).map(() => React.createRef<HTMLInputElement>())
+  const hasShownOtp = useRef(false) // Track if OTP has been shown
 
   // Load user details from localStorage on component mount
   useEffect(() => {
@@ -27,6 +29,28 @@ export default function OTPPage() {
         email: userEmail,
         expectedOtp: userOTP
       })
+      
+      // Show OTP in toast message only once
+      if (!hasShownOtp.current) {
+        hasShownOtp.current = true
+        setTimeout(() => {
+          toast.success(`Your OTP is: ${userOTP}`, {
+            duration: 8000,
+            position: 'top-center',
+            style: {
+              background: '#4682A9',
+              color: '#ffffff',
+              fontWeight: 'bold',
+              fontSize: '18px',
+              padding: '20px 32px',
+              borderRadius: '12px',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+              border: '2px solid #91C8E4'
+            },
+            icon: '🔐',
+          })
+        }, 500)
+      }
     } else {
       // If no user data found, redirect to login
       router.push('/login')
@@ -217,6 +241,25 @@ export default function OTPPage() {
         },
         icon: '📱',
       })
+      
+      // Show OTP again after resend
+      setTimeout(() => {
+        toast.success(`Your OTP is: ${userDetails.expectedOtp}`, {
+          duration: 8000,
+          position: 'top-center',
+          style: {
+            background: '#4682A9',
+            color: '#ffffff',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            padding: '20px 32px',
+            borderRadius: '12px',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+            border: '2px solid #91C8E4'
+          },
+          icon: '🔐',
+        })
+      }, 500)
     }
   }
 
@@ -278,7 +321,7 @@ export default function OTPPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-[#4682A9] mb-2">Verify Your Account</h2>
-            <p className="text-gray-600 mb-4">We've sent a verification code to</p>
+            <p className="text-gray-600 mb-4">We&lsquo;ve sent a verification code to</p>
             <p className="text-[#749BC2] font-bold">{formatPhoneNumber(userDetails.mobile)}</p>
             <p className="text-gray-500 text-sm mt-1">{userDetails.email}</p>
           </div>

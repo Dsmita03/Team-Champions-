@@ -2,10 +2,11 @@
 
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams,useRouter} from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaArrowLeft, FaCalendarAlt, FaPlus } from 'react-icons/fa';
+import { ChevronLeft } from 'lucide-react'
 import { useEffect, useState } from 'react';
 
 interface Doctor {
@@ -40,7 +41,7 @@ interface AppointmentData {
 
 export default function AppointmentScheduledPage() {
   const searchParams = useSearchParams();
-  
+  const router = useRouter()
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [appointmentData, setAppointmentData] = useState<AppointmentData | null>(null);
@@ -160,10 +161,11 @@ export default function AppointmentScheduledPage() {
     );
   }
 
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-linear-to-r from-[#91C8E4] to-[#4682A9] text-white sticky top-0 z-50 shadow-lg">
+      {/* <header className="bg-linear-to-r from-[#91C8E4] to-[#4682A9] text-white sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center">
             <Link 
@@ -175,7 +177,21 @@ export default function AppointmentScheduledPage() {
             <h1 className="text-xl font-semibold text-white-800 ml-4">Appointment Scheduled</h1>
           </div>
         </div>
+      </header> */}
+        <header className="bg-linear-to-r from-[#91C8E4] to-[#4682A9] text-white sticky top-0 z-50 shadow-lg">
+        <div className="px-4 sm:px-6 py-4">
+          <div className="flex items-center">
+            <button
+              onClick={() => router.back()}
+              className="p-2 hover:bg-white/20 rounded-full transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <h1 className="ml-3 text-lg sm:text-xl font-bold">Appointment Scheduled</h1>
+          </div>
+        </div>
       </header>
+
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-6">
