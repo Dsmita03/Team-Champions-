@@ -106,7 +106,7 @@ export default function BookAppointmentPage() {
     })
 
     setTimeout(() => {
-      router.push('/user/appointments')
+      router.push(`/user/add-patient/${appointment.id}`)
     }, 2000)
   }
 
