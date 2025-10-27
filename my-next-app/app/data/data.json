@@ -3,7 +3,7 @@
     {
       "id": "1",
       "mobile": "+91-9876543210",
-      "email": "admin@hospital.com",
+      "email": "admin.patient@hospital.com",
       "password": "admin123",
       "otp": "1234",
       "otpExpiry": "2025-11-25T19:00:00Z",
@@ -17,14 +17,14 @@
       "password": "patient123",
       "otp": "2345",
       "otpExpiry": "2025-12-25T19:00:00Z",
-      "isVerified": true,
-      "location": "Delhi, India"
+      "location": "Delhi, India",
+      "isVerified": true
     },
     {
       "id": "3",
       "mobile": "+91-9876543212",
-      "email": "dr.williams@hospital.com",
-      "password": "doctor123",
+      "email": "sarah.williams@email.com",
+      "password": "patient123",
       "otp": "3456",
       "otpExpiry": "2025-12-25T19:00:00Z",
       "location": "Mumbai, Maharashtra",
@@ -43,8 +43,8 @@
     {
       "id": "5",
       "mobile": "+91-9876543214",
-      "email": "dr.davis@hospital.com",
-      "password": "doctor456",
+      "email": "michael.davis@email.com",
+      "password": "patient456",
       "otp": "5678",
       "otpExpiry": "2025-12-22T19:00:00Z",
       "location": "Chennai, Tamil Nadu",
@@ -63,8 +63,8 @@
     {
       "id": "7",
       "mobile": "+91-9876543216",
-      "email": "dr.wilson@hospital.com",
-      "password": "doctor789",
+      "email": "jessica.wilson@email.com",
+      "password": "patient789",
       "otp": "7890",
       "otpExpiry": "2025-10-22T19:00:00Z",
       "location": "Hyderabad, Telangana",
@@ -83,8 +83,8 @@
     {
       "id": "9",
       "mobile": "+91-9876543218",
-      "email": "dr.anderson@hospital.com",
-      "password": "doctor101",
+      "email": "daniel.anderson@email.com",
+      "password": "patient101",
       "otp": "9012",
       "otpExpiry": "2025-10-22T19:00:00Z",
       "location": "Delhi, India",
@@ -103,8 +103,8 @@
     {
       "id": "11",
       "mobile": "+91-9876543220",
-      "email": "dr.martinez@hospital.com",
-      "password": "doctor202",
+      "email": "sophia.martinez@email.com",
+      "password": "patient202",
       "otp": "1357",
       "otpExpiry": "2025-10-22T19:00:00Z",
       "location": "Jaipur, Rajasthan",
@@ -123,8 +123,8 @@
     {
       "id": "13",
       "mobile": "+91-9876543222",
-      "email": "dr.lee@hospital.com",
-      "password": "doctor303",
+      "email": "william.lee@email.com",
+      "password": "patient303",
       "otp": "3579",
       "otpExpiry": "2025-10-22T19:00:00Z",
       "location": "Surat, Gujarat",
@@ -143,8 +143,8 @@
     {
       "id": "15",
       "mobile": "+91-9876543224",
-      "email": "dr.robinson@hospital.com",
-      "password": "doctor404",
+      "email": "olivia.robinson@email.com",
+      "password": "patient404",
       "otp": "5791",
       "otpExpiry": "2025-10-22T19:00:00Z",
       "location": "Indore, Madhya Pradesh",
@@ -152,155 +152,6 @@
     }
   ],
   "doctors": [
-    {
-      "id": "d1",
-      "name": "Dr. Priya Malhotra",
-      "speciality": "Orthopedic",
-      "location": "Delhi",
-      "price": 1200,
-      "rating": 4.7,
-      "experience": 16,
-      "availableDates": [
-        "2025-10-28",
-        "2025-10-26",
-        "2025-10-29"
-      ],
-      "availableTimes": [
-        "14:30",
-        "10:30",
-        "16:00"
-      ],
-      "image": "/Dr.PriyaMalhotra.png"
-    },
-    {
-      "id": "d2",
-      "name": "Dr. Vikram Rao",
-      "speciality": "Cardiologist",
-      "location": "Chennai",
-      "price": 1850,
-      "rating": 4.5,
-      "experience": 12,
-      "availableDates": [
-        "2025-10-29",
-        "2025-10-27",
-        "2025-10-30"
-      ],
-      "availableTimes": [
-        "11:00",
-        "15:30",
-        "09:30"
-      ],
-      "image": "/Dr. Vikram Rao.png"
-    },
-    {
-      "id": "d3",
-      "name": "Dr. Kavita Desai",
-      "speciality": "Psychiatrist",
-      "location": "Pune",
-      "price": 1300,
-      "rating": 4.9,
-      "experience": 22,
-      "availableDates": [
-        "2025-10-28",
-        "2025-10-26",
-        "2025-10-31"
-      ],
-      "availableTimes": [
-        "10:00",
-        "14:30",
-        "16:00"
-      ],
-      "image": "/Kavita Desai.png"
-    },
-    {
-      "id": "8c2f",
-      "name": "Dr. Sameer Kapoor",
-      "email": "sameer.kapoor@clinic.com",
-      "password": "Doctor@5821",
-      "phone": "+919283746510",
-      "qualification": "MD (Internal Medicine)",
-      "speciality": "Pulmonology",
-      "location": "Karnataka",
-      "experience": "8",
-      "availableDates": [
-        "2025-10-25",
-        "2025-11-01",
-        "2025-11-08"
-      ],
-      "availableTimes": [
-        "10:00",
-        "10:00",
-        "14:00"
-      ],
-      "image": "/Dr.SameerKapoor.png",
-      "price": "750",
-      "slotTypes": [
-        {
-          "type": "wave",
-          "expected": 20,
-          "booked": 0,
-          "max": 1
-        },
-        {
-          "type": "stream",
-          "expected": 18,
-          "booked": 0,
-          "max": 1
-        }
-      ],
-      "appointmentSlots": [
-        {
-          "id": "slot_1754024050047_xyz123",
-          "date": "2025-10-25",
-          "startTime": "10:00",
-          "endTime": "18:00",
-          "slotDuration": 25,
-          "totalSlots": 20,
-          "bookedSlots": [],
-          "slotType": "wave",
-          "maxPatients": 1,
-          "isActive": true,
-          "createdAt": "2025-10-15T04:30:10.047Z",
-          "updatedAt": "2025-10-20T07:00:35.646Z",
-          "dayOfWeek": "Saturday",
-          "availableSlots": [
-            "10:00",
-            "10:25",
-            "10:50",
-            "11:15",
-            "11:40",
-            "12:05",
-            "12:30",
-            "12:55",
-            "13:20",
-            "13:45",
-            "14:10",
-            "14:35",
-            "15:00",
-            "15:25",
-            "15:50",
-            "16:15",
-            "16:40",
-            "17:05",
-            "17:30",
-            "17:55"
-          ]
-        }
-      ],
-      "rating": 4.2,
-      "reviewCount": 6,
-      "reviews": [
-        {
-          "id": "1755064627213",
-          "userId": "a92c",
-          "appointmentId": "ap01",
-          "rating": 5,
-          "review": "Dr. Kapoor provided excellent care and took time to explain everything thoroughly. The clinic was well-maintained and the staff was courteous.",
-          "createdAt": "2025-10-18T05:57:07.213Z",
-          "patientName": "Patient-a92c"
-        }
-      ]
-    },
     {
       "id": "doc1",
       "name": "Dr. Rajesh Kumar",
@@ -314,16 +165,20 @@
       "location": "Mumbai, Maharashtra",
       "experience": 15,
       "rating": 4.8,
+      "reviewCount": 0,
       "price": 2000,
       "availableDates": ["2025-10-28", "2025-10-29", "2025-10-30"],
       "availableTimes": ["09:00", "11:00", "15:00", "17:00"],
       "image": "/Dr.RajeshKumar.png",
       "isVerified": true,
       "licenseNumber": "MH12345",
-      "about": "Senior Cardiologist with 15+ years of experience in interventional cardiology."
+      "about": "Senior Cardiologist with 15+ years of experience in interventional cardiology.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
     },
     {
-      "id": "doc2", 
+      "id": "doc2",
       "name": "Dr. Sunita Sharma",
       "email": "dr.sunita@clinic.com",
       "phone": "+91-9876500002",
@@ -335,17 +190,21 @@
       "location": "Delhi, India",
       "experience": 12,
       "rating": 4.6,
+      "reviewCount": 0,
       "price": 1800,
       "availableDates": ["2025-10-27", "2025-10-28", "2025-10-31"],
       "availableTimes": ["10:00", "14:00", "16:30"],
       "image": "/Dr.SunitaSharma.png",
       "isVerified": true,
       "licenseNumber": "DL67890",
-      "about": "Specialist in joint replacement and sports medicine."
+      "about": "Specialist in joint replacement and sports medicine.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
     },
-      {
+    {
       "id": "doc3",
-      "name": "Dr. Amit Patel", 
+      "name": "Dr. Amit Patel",
       "email": "dr.amit@healthcare.com",
       "phone": "+91-9876500003",
       "password": "doctor789",
@@ -356,40 +215,48 @@
       "location": "Bangalore, Karnataka",
       "experience": 8,
       "rating": 4.7,
+      "reviewCount": 0,
       "price": 1200,
       "availableDates": ["2025-10-28", "2025-10-30", "2025-11-01"],
       "availableTimes": ["09:30", "11:30", "15:30", "17:30"],
       "image": "/Dr.AmitPatel.png",
       "isVerified": true,
       "licenseNumber": "KA11111",
-      "about": "Child specialist with expertise in newborn care and vaccination."
+      "about": "Child specialist with expertise in newborn care and vaccination.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
     },
     {
       "id": "doc4",
       "name": "Dr. Meera Joshi",
-      "email": "dr.meera@women.health.com", 
+      "email": "dr.meera@women.health.com",
       "phone": "+91-9876500004",
       "password": "doctor000",
       "otp": "4444",
       "otpExpiry": "2025-12-31T23:59:59Z",
       "qualification": "MBBS, MD (Gynecology)",
       "speciality": "Gynecologist",
-      "location": "Pune, Maharashtra", 
+      "location": "Pune, Maharashtra",
       "experience": 18,
       "rating": 4.9,
+      "reviewCount": 0,
       "price": 1500,
       "availableDates": ["2025-10-29", "2025-10-31", "2025-11-02"],
       "availableTimes": ["10:00", "12:00", "16:00"],
       "image": "/Dr.MeeraJoshi.png",
       "isVerified": true,
       "licenseNumber": "MH54321",
-      "about": "Women's health specialist with focus on high-risk pregnancies."
+      "about": "Women's health specialist with focus on high-risk pregnancies.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
     },
-     {
+    {
       "id": "doc5",
       "name": "Dr. Vikash Singh",
       "email": "dr.vikash@neuro.center.com",
-      "phone": "+91-9876500005", 
+      "phone": "+91-9876500005",
       "password": "neuro123",
       "otp": "5555",
       "otpExpiry": "2025-12-31T23:59:59Z",
@@ -398,14 +265,118 @@
       "location": "Chennai, Tamil Nadu",
       "experience": 20,
       "rating": 4.8,
+      "reviewCount": 0,
       "price": 2500,
       "availableDates": ["2025-10-28", "2025-11-01", "2025-11-03"],
       "availableTimes": ["11:00", "14:00"],
       "image": "/Dr.VikashSingh.png",
       "isVerified": true,
       "licenseNumber": "TN98765",
-      "about": "Leading neurosurgeon specializing in brain and spine surgery."
+      "about": "Leading neurosurgeon specializing in brain and spine surgery.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
+    },
+    {
+      "id": "doc6",
+      "name": "Dr. Priya Malhotra",
+      "email": "dr.priya@ortho.clinic.com",
+      "phone": "+91-9876500006",
+      "password": "ortho456",
+      "otp": "6666",
+      "otpExpiry": "2025-12-31T23:59:59Z",
+      "qualification": "MBBS, MS (Orthopedics)",
+      "speciality": "Orthopedic",
+      "location": "Delhi, India",
+      "experience": 16,
+      "rating": 4.7,
+      "reviewCount": 0,
+      "price": 1200,
+      "availableDates": ["2025-10-28", "2025-10-26", "2025-10-29"],
+      "availableTimes": ["14:30", "10:30", "16:00"],
+      "image": "/Dr.PriyaMalhotra.png",
+      "isVerified": true,
+      "licenseNumber": "DL22222",
+      "about": "Experienced orthopedic surgeon specializing in trauma and fracture care.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
+    },
+    {
+      "id": "doc7",
+      "name": "Dr. Vikram Rao",
+      "email": "dr.vikram@cardio.center.com",
+      "phone": "+91-9876500007",
+      "password": "cardio789",
+      "otp": "7777",
+      "otpExpiry": "2025-12-31T23:59:59Z",
+      "qualification": "MBBS, DM (Cardiology)",
+      "speciality": "Cardiologist",
+      "location": "Chennai, Tamil Nadu",
+      "experience": 12,
+      "rating": 4.5,
+      "reviewCount": 0,
+      "price": 1850,
+      "availableDates": ["2025-10-29", "2025-10-27", "2025-10-30"],
+      "availableTimes": ["11:00", "15:30", "09:30"],
+      "image": "/Dr.VikramRao.png",
+      "isVerified": true,
+      "licenseNumber": "TN33333",
+      "about": "Interventional cardiologist with expertise in complex cardiac procedures.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
+    },
+    {
+      "id": "doc8",
+      "name": "Dr. Kavita Desai",
+      "email": "dr.kavita@mental.health.com",
+      "phone": "+91-9876500008",
+      "password": "psych101",
+      "otp": "8888",
+      "otpExpiry": "2025-12-31T23:59:59Z",
+      "qualification": "MBBS, MD (Psychiatry)",
+      "speciality": "Psychiatrist",
+      "location": "Pune, Maharashtra",
+      "experience": 22,
+      "rating": 4.9,
+      "reviewCount": 0,
+      "price": 1300,
+      "availableDates": ["2025-10-28", "2025-10-26", "2025-10-31"],
+      "availableTimes": ["10:00", "14:30", "16:00"],
+      "image": "/KavitaDesai.png",
+      "isVerified": true,
+      "licenseNumber": "MH44444",
+      "about": "Senior psychiatrist specializing in mood disorders and anxiety treatment.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
+    },
+    {
+      "id": "doc9",
+      "name": "Dr. Sameer Kapoor",
+      "email": "dr.sameer@clinic.com",
+      "phone": "+91-9283746510",
+      "password": "Doctor@5821",
+      "otp": "9999",
+      "otpExpiry": "2025-12-31T23:59:59Z",
+      "qualification": "MD (Internal Medicine)",
+      "speciality": "Pulmonology",
+      "location": "Bangalore, Karnataka",
+      "experience": 8,
+      "rating": 4.2,
+      "reviewCount": 6,
+      "price": 750,
+      "availableDates": ["2025-10-25", "2025-11-01", "2025-11-08"],
+      "availableTimes": ["10:00", "14:00", "16:30"],
+      "image": "/Dr.SameerKapoor.png",
+      "isVerified": true,
+      "licenseNumber": "KA55555",
+      "about": "Pulmonologist with focus on respiratory disorders and sleep medicine.",
+      "slotTypes": [],
+      "appointmentSlots": [],
+      "reviews": []
     }
-    
   ]
 }
+    

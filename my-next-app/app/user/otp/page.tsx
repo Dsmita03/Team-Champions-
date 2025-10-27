@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/immutability */
 'use client'
 
@@ -16,9 +17,8 @@ export default function OTPPage() {
   const [timeLeft, setTimeLeft] = useState(55)
   const [userDetails, setUserDetails] = useState<{mobile: string, email: string, expectedOtp: string, loginType: string} | null>(null)
   const inputRefs = Array(4).fill(null).map(() => React.createRef<HTMLInputElement>())
-  const hasShownOtp = useRef(false) // Track if OTP has been shown
+  const hasShownOtp = useRef(false)
 
-  // Load user details from localStorage on component mount
   useEffect(() => {
     const userMobile = localStorage.getItem('userMobile')
     const userEmail = localStorage.getItem('userEmail')
@@ -33,7 +33,6 @@ export default function OTPPage() {
         loginType: loginType
       })
       
-      // Show OTP in toast message only once
       if (!hasShownOtp.current) {
         hasShownOtp.current = true
         setTimeout(() => {
@@ -55,7 +54,6 @@ export default function OTPPage() {
         }, 500)
       }
     } else {
-      // If no user data found, redirect to login
       router.push('/user/login')
     }
   }, [router])
@@ -67,7 +65,6 @@ export default function OTPPage() {
     }
   }, [timeLeft])
 
-  // keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (document.activeElement && (document.activeElement as HTMLElement).tagName === 'INPUT') return;
@@ -84,7 +81,7 @@ export default function OTPPage() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [otp, currentIndex])
+  })
 
   const handleNumberClick = (number: string) => {
     if (currentIndex < 4) {
@@ -128,30 +125,50 @@ export default function OTPPage() {
     const validUser = searchData.find(user => user.otp === otpCode)
     
     if (validUser) {
-      // Check if OTP is not expired
       const now = new Date()
       const otpExpiry = validUser.otpExpiry ? new Date(validUser.otpExpiry) : new Date(0)
       
       if (now <= otpExpiry) {
-        // Verify that the entered OTP matches the expected OTP for this user
         if (otpCode === userDetails.expectedOtp) {
-          // save user data to localStorage
-          const userInfo = {
-            id: validUser.id,
-            phone: (validUser as any).mobile || (validUser as any).phone || '',
-            email: (validUser as any).email || '',
-            verified: true,
-            verifiedAt: new Date().toISOString(),
-            otp: otpCode,
-            loginType: userDetails.loginType,
-            ...(userDetails.loginType === 'doctor' && {
+          // Store user/doctor data in localStorage
+          if (userDetails.loginType === 'doctor') {
+            // Store doctor ID and data
+            localStorage.setItem('doctorId', validUser.id)
+            localStorage.setItem('doctorEmail', (validUser as any).email || '')
+            localStorage.setItem('doctorName', (validUser as any).name || '')
+            localStorage.setItem('doctorPhone', (validUser as any).phone || '')
+            
+            const doctorInfo = {
+              id: validUser.id,
               name: (validUser as any).name || '',
+              email: (validUser as any).email || '',
+              phone: (validUser as any).phone || '',
               speciality: (validUser as any).speciality || '',
               qualification: (validUser as any).qualification || '',
-              location: (validUser as any).location || ''
-            })
+              location: (validUser as any).location || '',
+              experience: (validUser as any).experience || '',
+              verified: true,
+              verifiedAt: new Date().toISOString(),
+              loginType: 'doctor'
+            }
+            localStorage.setItem('doctorData', JSON.stringify(doctorInfo))
+          } else {
+            // Store patient ID and data
+            localStorage.setItem('userId', validUser.id)
+            localStorage.setItem('userEmail', (validUser as any).email || '')
+            localStorage.setItem('userLocation', (validUser as any).location || '')
+            
+            const userInfo = {
+              id: validUser.id,
+              phone: (validUser as any).mobile || (validUser as any).phone || '',
+              email: (validUser as any).email || '',
+              location: (validUser as any).location || '',
+              verified: true,
+              verifiedAt: new Date().toISOString(),
+              loginType: 'patient'
+            }
+            localStorage.setItem('userData', JSON.stringify(userInfo))
           }
-          localStorage.setItem('userData', JSON.stringify(userInfo))
           
           toast.success('OTP Verified Successfully!', {
             duration: 2000,
@@ -168,10 +185,10 @@ export default function OTPPage() {
             icon: '✓',
           })
           
-          // Redirect to appropriate dashboard based on login type
+          // Redirect to appropriate dashboard
           setTimeout(() => {
             if (userDetails.loginType === 'doctor') {
-              router.push('/doctor/dashboard') // Create doctor dashboard later
+              router.push('/doctor/dashboard')
             } else {
               router.push('/user/dashboard')
             }
@@ -259,7 +276,6 @@ export default function OTPPage() {
         icon: '📱',
       })
       
-      // Show OTP again after resend
       setTimeout(() => {
         toast.success(`Your OTP is: ${userDetails.expectedOtp}`, {
           duration: 8000,
@@ -291,7 +307,6 @@ export default function OTPPage() {
 
   const isOtpComplete = otp.every(d => d.length === 1)
 
-  // Show loading while user details are being loaded
   if (!userDetails) {
     return (
       <div className="min-h-screen bg-[#f2f1ef] flex items-center justify-center">
@@ -305,7 +320,7 @@ export default function OTPPage() {
     <div className="min-h-screen bg-[#f2f1ef] flex flex-col">
       <Toaster />
       
-      {/* Header - Consistent with other pages */}
+      {/* Header */}
       <header className="bg-linear-to-r from-[#91C8E4] to-[#4682A9] text-white sticky top-0 z-50 shadow-lg">
         <div className="px-4 sm:px-6 py-4">
           <div className="flex items-center">
@@ -430,7 +445,6 @@ export default function OTPPage() {
         {/* Number Pad */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
           <div className="grid grid-cols-3 gap-4">
-            {/* Number buttons */}
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
               <button
                 key={number}
@@ -441,7 +455,6 @@ export default function OTPPage() {
               </button>
             ))}
 
-            {/* Bottom row: empty, 0, delete */}
             <div></div>
             <button
               onClick={() => handleNumberClick('0')}

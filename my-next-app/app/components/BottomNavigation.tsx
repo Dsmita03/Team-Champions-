@@ -13,7 +13,7 @@ export default function BottomNavigation({ activeTab = 'home' }: BottomNavigatio
         <div className="flex items-center justify-around py-2 sm:py-3">
           {/* Find Doctor */}
           <Link 
-            href="/home" 
+            href="/user/dashboard" 
             className={`flex flex-col items-center space-y-0.5 sm:space-y-1 min-w-0 ${
               activeTab === 'home' ? 'text-[#4FC3F7]' : 'text-gray-600 hover:text-[#4FC3F7]'
             }`}
@@ -52,7 +52,7 @@ export default function BottomNavigation({ activeTab = 'home' }: BottomNavigatio
 
           {/* Profile */}
           <Link 
-            href="/profile" 
+            href="/user/profile" 
             className={`flex flex-col items-center space-y-0.5 sm:space-y-1 min-w-0 ${
               activeTab === 'profile' ? 'text-[#4FC3F7]' : 'text-gray-600 hover:text-[#4FC3F7]'
             }`}

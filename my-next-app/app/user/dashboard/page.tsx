@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { LogOut } from 'lucide-react';
 import BottomNavigation from '../../components/BottomNavigation';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 
@@ -36,6 +37,7 @@ export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,6 +91,16 @@ export default function HomePage() {
 
     fetchData();
   }, [router]);
+
+
+  const handleLogout = () => {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userMobile');
+  localStorage.removeItem('userLocation');
+  localStorage.removeItem('favorites');
+  router.push('/user/login');
+};
 
   const toggleFavorite = (doctorId: string) => {
     const newFavorites = favorites.includes(doctorId)
@@ -149,36 +161,47 @@ export default function HomePage() {
     <ProtectedRoute>
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-linear-to-br from-[#91C8E4] to-[#4682A9] flex items-center justify-center text-white font-bold text-base sm:text-lg">
-                {getUserName().charAt(0).toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <h1 className="text-sm sm:text-lg font-bold text-gray-900 truncate">
-                  Hello, {getUserName().split(' ')[0]}
-                </h1>
-                <p className="text-xs sm:text-sm text-gray-500 flex items-center truncate">
-                  <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span className="truncate">{user?.location || 'India'}</span>
-                </p>
-              </div>
-            </div>
-
-            <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors shrink-0">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-          </div>
+<header className="bg-white shadow-sm sticky top-0 z-50">
+  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-linear-to-br from-[#91C8E4] to-[#4682A9] flex items-center justify-center text-white font-bold text-base sm:text-lg">
+          {getUserName().charAt(0).toUpperCase()}
         </div>
-      </header>
+        <div className="min-w-0">
+          <h1 className="text-sm sm:text-lg font-bold text-gray-900 truncate">
+            Hello, {getUserName().split(' ')[0]}
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 flex items-center truncate">
+            <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="truncate">{user?.location || 'India'}</span>
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors shrink-0">
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+
+        <button 
+          onClick={() => setShowLogoutModal(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-full transition-all font-medium text-xs sm:text-sm"
+        >
+          <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -351,6 +374,36 @@ export default function HomePage() {
             })}
           </div>
         )}
+        {/* Logout Confirmation Modal */}
+       {showLogoutModal && (
+       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+       <div className="text-center">
+         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <LogOut className="w-8 h-8 text-red-600" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Logout Confirmation</h3>
+        <p className="text-gray-600 mb-6">Are you sure you want to logout from your account?</p>
+        
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowLogoutModal(false)}
+            className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex-1 px-4 py-3 bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-semibold transition-all shadow-md hover:shadow-lg"
+          >
+            Logout
+           </button>
+         </div>
+          </div>
+         </div>
+      </div>
+   )}
+
       </main>
       <BottomNavigation activeTab="home" />
     </div>
