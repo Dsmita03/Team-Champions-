@@ -4,9 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Stethoscope } from 'lucide-react';
+import { Stethoscope, User, Phone, Mail, Lock, MapPin, Award, GraduationCap } from 'lucide-react';
 
-function SignupPage() {
+function DoctorSignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -14,11 +14,18 @@ function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [signupType, setSignupType] = useState<'patient' | 'doctor'>('patient');
   const [speciality, setSpeciality] = useState('');
   const [qualification, setQualification] = useState('');
   const [location, setLocation] = useState('');
+  const [experience, setExperience] = useState('');
+  const [licenseNumber, setLicenseNumber] = useState('');
   const router = useRouter();
+
+  const specialties = [
+    'Cardiologist', 'Dermatologist', 'Neurologist', 'Orthopedic Surgeon', 
+    'Pediatrician', 'Psychiatrist', 'General Physician', 'Gynecologist',
+    'ENT Specialist', 'Ophthalmologist', 'Urologist', 'Oncologist'
+  ];
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,24 +39,25 @@ function SignupPage() {
       return;
     }
 
-    // Additional validation for doctor signup
-    if (signupType === 'doctor') {
-      if (!speciality.trim() || !qualification.trim() || !location.trim()) {
-        alert("Please fill in all doctor-specific fields!");
-        return;
-      }
+    // Validation for doctor-specific fields
+    if (!speciality.trim() || !qualification.trim() || !location.trim() || !experience.trim() || !licenseNumber.trim()) {
+      alert("Please fill in all medical professional fields!");
+      return;
     }
 
     setIsLoading(true);
 
     try {
-      console.log('Signup with:', {
+      console.log('Doctor Signup with:', {
         name,
         email,
         phone,
         password,
-        signupType,
-        ...(signupType === 'doctor' && { speciality, qualification, location })
+        speciality,
+        qualification,
+        location,
+        experience,
+        licenseNumber
       });
 
       // Simulate API call
@@ -59,16 +67,15 @@ function SignupPage() {
       localStorage.setItem('signupName', name);
       localStorage.setItem('signupEmail', email);
       localStorage.setItem('signupPhone', phone);
-      localStorage.setItem('signupType', signupType);
+      localStorage.setItem('signupType', 'doctor');
+      localStorage.setItem('signupSpeciality', speciality);
+      localStorage.setItem('signupQualification', qualification);
+      localStorage.setItem('signupLocation', location);
+      localStorage.setItem('signupExperience', experience);
+      localStorage.setItem('signupLicenseNumber', licenseNumber);
 
-      if (signupType === 'doctor') {
-        localStorage.setItem('signupSpeciality', speciality);
-        localStorage.setItem('signupQualification', qualification);
-        localStorage.setItem('signupLocation', location);
-      }
-
-      alert(`${signupType === 'doctor' ? 'Doctor' : 'Patient'} account created successfully!`);
-      router.push('/user/login');
+      alert('Doctor account created successfully!');
+      router.push('/doctor/login');
     } catch (err) {
       console.error('Signup error:', err);
       alert('Unable to create account. Please try again.');
@@ -78,7 +85,7 @@ function SignupPage() {
   };
 
   const handleGoogleSignup = () => {
-    console.log('Continue with Google for signup');
+    console.log('Continue with Google for doctor signup');
   };
 
   return (
@@ -100,7 +107,7 @@ function SignupPage() {
         <div className="hidden sm:flex items-center space-x-2 text-sm text-[#4682A9]">
           <span>Already registered?</span>
           <Link
-            href="/user/login"
+            href="/doctor/login"
             className="text-[#4682A9] hover:text-[#749BC2] font-semibold transition-colors"
           >
             Sign In
@@ -116,19 +123,16 @@ function SignupPage() {
           <div className="hidden lg:flex flex-col justify-center space-y-8 px-8">
             <div className="space-y-4">
               <div className="inline-block px-4 py-2 bg-[#91C8E4]/20 rounded-full">
-                <span className="text-[#4682A9] font-semibold text-sm">🏥 Join Our Platform</span>
+                <span className="text-[#4682A9] font-semibold text-sm">🩺 Join Our Medical Network</span>
               </div>
 
               <h1 className="text-5xl font-bold text-[#2C5F7C] leading-tight">
-                {signupType === 'doctor' ? 'Start Your Medical' : 'Start Your'}
-                <span className="text-[#4682A9]"> {signupType === 'doctor' ? 'Practice' : 'Health Journey'}</span>
+                Start Your Medical
+                <span className="text-[#4682A9]"> Practice</span>
               </h1>
 
               <p className="text-lg text-[#4682A9] leading-relaxed">
-                {signupType === 'doctor'
-                  ? 'Join our platform to connect with patients, manage appointments, and grow your medical practice.'
-                  : 'Create your account to access top healthcare professionals, manage appointments, and take control of your health.'
-                }
+                Join our platform to connect with patients, manage appointments, and grow your medical practice with our comprehensive healthcare solutions.
               </p>
             </div>
 
@@ -137,41 +141,41 @@ function SignupPage() {
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#91C8E4]/20 rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">100+ Doctors</h3>
-                <p className="text-sm text-[#4682A9]">Expert specialists available</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">10K+ Patients</h3>
+                <p className="text-sm text-[#4682A9]">Access to large patient base</p>
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#749BC2]/20 rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">24/7 Support</h3>
-                <p className="text-sm text-[#4682A9]">Round the clock assistance</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Smart Scheduling</h3>
+                <p className="text-sm text-[#4682A9]">Automated appointment system</p>
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#FFFBDE] rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">Easy Booking</h3>
-                <p className="text-sm text-[#4682A9]">Book in just 2 minutes</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Revenue Growth</h3>
+                <p className="text-sm text-[#4682A9]">Increase your practice income</p>
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#91C8E4]/20 rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">10K+ Patients</h3>
-                <p className="text-sm text-[#4682A9]">Trusted by thousands</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Trusted Platform</h3>
+                <p className="text-sm text-[#4682A9]">HIPAA compliant & secure</p>
               </div>
             </div>
           </div>
@@ -182,21 +186,21 @@ function SignupPage() {
 
               {/* Form Header */}
               <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold text-[#2C5F7C] mb-2">Create Account</h2>
-                <p className="text-[#4682A9]">Join thousands of satisfied {signupType === 'doctor' ? 'doctors' : 'patients'}</p>
+                <h2 className="text-3xl font-bold text-[#2C5F7C] mb-2">Create Doctor Account</h2>
+                <p className="text-[#4682A9]">Join our medical professionals network</p>
               </div>
 
-              {/* Signup Type Toggle */}
+              {/* Patient Signup Redirect */}
               <div className="text-center mb-6">
                 <div className="bg-[#91C8E4]/10 border border-[#91C8E4]/20 rounded-xl p-4">
                   <div className="flex items-center justify-center gap-3">
                     <Stethoscope className="w-5 h-5 text-[#4682A9]" />
-                    <span className="text-[#4682A9] font-medium">Are you a doctor?</span>
+                    <span className="text-[#4682A9] font-medium">Are you a patient?</span>
                     <Link
-                      href="/doctor/signup"
+                      href="/user/signup"
                       className="px-4 py-2 bg-linear-to-r from-[#91C8E4] to-[#4682A9] text-white rounded-lg font-medium hover:from-[#749BC2] hover:to-[#4682A9] transition-all shadow-md hover:shadow-lg text-sm"
                     >
-                      Doctor Registration
+                      Patient Signup
                     </Link>
                   </div>
                 </div>
@@ -206,13 +210,11 @@ function SignupPage() {
                 {/* Name Input */}
                 <div>
                   <label htmlFor="name" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                    Full Name
+                    Full Name (Dr.)
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                      <User className="w-5 h-5 text-[#91C8E4]" />
                     </div>
                     <input
                       type="text"
@@ -232,20 +234,18 @@ function SignupPage() {
                   {/* Email Input */}
                   <div>
                     <label htmlFor="email" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                      Email
+                      Professional Email
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                        </svg>
+                        <Mail className="w-5 h-5 text-[#91C8E4]" />
                       </div>
                       <input
                         type="email"
                         id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Your email"
+                        placeholder="doctor@hospital.com"
                         disabled={isLoading}
                         required
                         className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
@@ -256,20 +256,18 @@ function SignupPage() {
                   {/* Phone Input */}
                   <div>
                     <label htmlFor="phone" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                      Phone
+                      Contact Number
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
+                        <Phone className="w-5 h-5 text-[#91C8E4]" />
                       </div>
                       <input
                         type="tel"
                         id="phone"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Phone number"
+                        placeholder="Your mobile number"
                         disabled={isLoading}
                         required
                         className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
@@ -287,9 +285,7 @@ function SignupPage() {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
+                        <Lock className="w-5 h-5 text-[#91C8E4]" />
                       </div>
                       <input
                         type="password"
@@ -307,13 +303,11 @@ function SignupPage() {
                   {/* Confirm Password Input */}
                   <div>
                     <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                      Confirm
+                      Confirm Password
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
+                        <Lock className="w-5 h-5 text-[#91C8E4]" />
                       </div>
                       <input
                         type="password"
@@ -329,108 +323,148 @@ function SignupPage() {
                   </div>
                 </div>
 
-                {/* Doctor-specific fields */}
-                {signupType === 'doctor' && (
-                  <>
-                    {/* Speciality and Qualification */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Speciality Input */}
-                      <div>
-                        <label htmlFor="speciality" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                          Speciality
-                        </label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                            </svg>
-                          </div>
-                          <input
-                            type="text"
-                            id="speciality"
-                            value={speciality}
-                            onChange={(e) => setSpeciality(e.target.value)}
-                            placeholder="e.g. Cardiology"
-                            disabled={isLoading}
-                            required
-                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                          />
-                        </div>
+                {/* Medical Professional Fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Speciality Dropdown */}
+                  <div>
+                    <label htmlFor="speciality" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
+                      Medical Speciality
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Stethoscope className="w-5 h-5 text-[#91C8E4]" />
                       </div>
-
-                      {/* Qualification Input */}
-                      <div>
-                        <label htmlFor="qualification" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                          Qualification
-                        </label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                          </div>
-                          <input
-                            type="text"
-                            id="qualification"
-                            value={qualification}
-                            onChange={(e) => setQualification(e.target.value)}
-                            placeholder="e.g. MBBS, MD"
-                            disabled={isLoading}
-                            required
-                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                          />
-                        </div>
-                      </div>
+                      <select
+                        id="speciality"
+                        value={speciality}
+                        onChange={(e) => setSpeciality(e.target.value)}
+                        disabled={isLoading}
+                        required
+                        className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed appearance-none"
+                      >
+                        <option value="">Select your speciality</option>
+                        {specialties.map((specialty) => (
+                          <option key={specialty} value={specialty}>
+                            {specialty}
+                          </option>
+                        ))}
+                      </select>
                     </div>
+                  </div>
 
-                    {/* Location Input */}
-                    <div>
-                      <label htmlFor="location" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                        Practice Location
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                        </div>
-                        <input
-                          type="text"
-                          id="location"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          placeholder="City, State"
-                          disabled={isLoading}
-                          required
-                          className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                        />
+                  {/* Qualification Input */}
+                  <div>
+                    <label htmlFor="qualification" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
+                      Qualification
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <GraduationCap className="w-5 h-5 text-[#91C8E4]" />
                       </div>
+                      <input
+                        type="text"
+                        id="qualification"
+                        value={qualification}
+                        onChange={(e) => setQualification(e.target.value)}
+                        placeholder="MBBS, MD, MS, etc."
+                        disabled={isLoading}
+                        required
+                        className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      />
                     </div>
-                  </>
-                )}
+                  </div>
+                </div>
+
+                {/* Experience and License Number */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Experience Input */}
+                  <div>
+                    <label htmlFor="experience" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
+                      Experience (Years)
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Award className="w-5 h-5 text-[#91C8E4]" />
+                      </div>
+                      <input
+                        type="number"
+                        id="experience"
+                        value={experience}
+                        onChange={(e) => setExperience(e.target.value)}
+                        placeholder="Years of practice"
+                        disabled={isLoading}
+                        required
+                        min="0"
+                        className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      />
+                    </div>
+                  </div>
+
+                  {/* License Number Input */}
+                  <div>
+                    <label htmlFor="licenseNumber" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
+                      Medical License
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Award className="w-5 h-5 text-[#91C8E4]" />
+                      </div>
+                      <input
+                        type="text"
+                        id="licenseNumber"
+                        value={licenseNumber}
+                        onChange={(e) => setLicenseNumber(e.target.value)}
+                        placeholder="Medical license number"
+                        disabled={isLoading}
+                        required
+                        className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location Input */}
+                <div>
+                  <label htmlFor="location" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
+                    Practice Location
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <MapPin className="w-5 h-5 text-[#91C8E4]" />
+                    </div>
+                    <input
+                      type="text"
+                      id="location"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="City, Hospital/Clinic name"
+                      disabled={isLoading}
+                      required
+                      className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    />
+                  </div>
+                </div>
 
                 {/* Terms Checkbox */}
                 <div className="flex items-start">
-                  <label className="flex items-start space-x-2 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      disabled={isLoading}
-                      required
-                      className="w-4 h-4 mt-0.5 rounded border-gray-300 text-[#4682A9] focus:ring-[#91C8E4] transition-colors cursor-pointer"
-                    />
-                    <span className="text-sm text-[#4682A9] leading-tight">
-                      I agree to the{' '}
-                      <Link href="/terms" className="text-[#4682A9] hover:underline font-medium">
-                        Terms
-                      </Link>
-                      {' '}and{' '}
-                      <Link href="/privacy" className="text-[#4682A9] hover:underline font-medium">
-                        Privacy Policy
-                      </Link>
-                    </span>
+                  <input
+                    type="checkbox"
+                    id="agreeTerms"
+                    checked={agreeTerms}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
+                    disabled={isLoading}
+                    className="w-4 h-4 mt-1 rounded border-gray-300 text-[#4682A9] focus:ring-[#91C8E4] transition-colors cursor-pointer"
+                  />
+                  <label htmlFor="agreeTerms" className="ml-3 text-sm text-[#4682A9] cursor-pointer">
+                    I agree to the{' '}
+                    <Link href="/terms" className="text-[#4682A9] hover:text-[#749BC2] font-semibold transition-colors underline">
+                      Terms and Conditions
+                    </Link>
+                    {' '}and{' '}
+                    <Link href="/privacy" className="text-[#4682A9] hover:text-[#749BC2] font-semibold transition-colors underline">
+                      Privacy Policy
+                    </Link>
+                    . I confirm that all medical credentials provided are accurate and valid.
                   </label>
                 </div>
 
@@ -441,15 +475,12 @@ function SignupPage() {
                   className="w-full bg-linear-to-r from-[#91C8E4] to-[#4682A9] hover:from-[#749BC2] hover:to-[#4682A9] text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isLoading ? (
-                    <div className="flex items-center justify-center">
-                      <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Creating {signupType === 'doctor' ? 'Doctor' : 'Patient'} Account...
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Creating Account...</span>
                     </div>
                   ) : (
-                    `Create ${signupType === 'doctor' ? 'Doctor' : 'Patient'} Account`
+                    'Create Doctor Account'
                   )}
                 </button>
               </form>
@@ -460,7 +491,7 @@ function SignupPage() {
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="px-4 bg-white text-sm text-[#4682A9]">Or sign up with</span>
+                  <span className="px-4 bg-white text-sm text-[#4682A9]">Or continue with</span>
                 </div>
               </div>
 
@@ -494,7 +525,7 @@ function SignupPage() {
               {/* Login Link - Mobile */}
               <div className="text-center mt-6 sm:hidden">
                 <span className="text-[#4682A9] text-sm">Already have an account? </span>
-                <Link href="/user/login" className="text-[#4682A9] hover:text-[#749BC2] font-semibold text-sm transition-colors">
+                <Link href="/doctor/login" className="text-[#4682A9] hover:text-[#749BC2] font-semibold text-sm transition-colors">
                   Sign In
                 </Link>
               </div>
@@ -506,4 +537,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default DoctorSignupPage;
