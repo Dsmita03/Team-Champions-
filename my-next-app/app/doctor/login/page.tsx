@@ -6,11 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Stethoscope } from 'lucide-react';
 
-export default function LoginPage() {
+export default function DoctorLoginPage() {
   const [emailOrMobile, setEmailOrMobile] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [loginType, setLoginType] = useState<'patient' | 'doctor'>('patient');
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -32,38 +31,33 @@ export default function LoginPage() {
 
       const data = await response.json();
 
-      // Search in appropriate data based on login type
-      const searchData = loginType === 'doctor' ? data.doctors : data.users;
+      // Search in doctors data
+      const searchData = data.doctors;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const user = searchData.find((u: any) => {
-        const email = u.email?.toLowerCase() || '';
-        const mobile = u.mobile || '';
-        const phone = u.phone || '';
+      const doctor = searchData.find((d: any) => {
+        const email = d.email?.toLowerCase() || '';
+        const mobile = d.mobile || '';
+        const phone = d.phone || '';
         const inputLower = emailOrMobile.toLowerCase().trim();
         const inputTrim = emailOrMobile.trim();
 
         return email === inputLower || mobile === inputTrim || phone === inputTrim;
       });
 
-      if (user) {
+      if (doctor) {
         localStorage.setItem('loginEmailOrMobile', emailOrMobile);
-        localStorage.setItem('userId', user.id);
-        localStorage.setItem('userEmail', user.email || '');
-        localStorage.setItem('userMobile', user.mobile || user.phone || '');
-        localStorage.setItem('userOTP', user.otp || '');
-        localStorage.setItem('loginType', loginType);
+        localStorage.setItem('userId', doctor.id);
+        localStorage.setItem('userEmail', doctor.email || '');
+        localStorage.setItem('userMobile', doctor.mobile || doctor.phone || '');
+        localStorage.setItem('userOTP', doctor.otp || '');
+        localStorage.setItem('loginType', 'doctor');
 
-        // Store additional doctor info if doctor login
-        if (loginType === 'doctor') {
-          localStorage.setItem('doctorName', user.name || '');
-          localStorage.setItem('doctorSpeciality', user.speciality || '');
-          localStorage.setItem('doctorQualification', user.qualification || '');
-          localStorage.setItem('doctorLocation', user.location || '');
-        } else {
-          // Store patient info
-          localStorage.setItem('patientLocation', user.location || '');
-        }
+        // Store doctor info
+        localStorage.setItem('doctorName', doctor.name || '');
+        localStorage.setItem('doctorSpeciality', doctor.speciality || '');
+        localStorage.setItem('doctorQualification', doctor.qualification || '');
+        localStorage.setItem('doctorLocation', doctor.location || '');
 
         if (rememberMe) {
           localStorage.setItem('rememberMe', 'true');
@@ -71,7 +65,7 @@ export default function LoginPage() {
 
         router.push('/user/otp');
       } else {
-        alert(`${loginType === 'doctor' ? 'Doctor' : 'User'} not found. Please check your credentials.`);
+        alert('Doctor not found. Please check your credentials.');
       }
     } catch (err) {
       console.error('Login error:', err);
@@ -102,9 +96,9 @@ export default function LoginPage() {
           <span className="text-xl font-bold text-[#4682A9]">Schedula</span>
         </div>
         <div className="hidden sm:flex items-center space-x-2 text-sm text-[#4682A9]">
-          <span>New here?</span>
+          <span>New doctor?</span>
           <Link
-            href="/user/signup"
+            href="/doctor/signup"
             className="text-[#4682A9] hover:text-[#749BC2] font-semibold transition-colors"
           >
             Create Account
@@ -120,16 +114,16 @@ export default function LoginPage() {
           <div className="hidden lg:flex flex-col justify-center space-y-8 px-8">
             <div className="space-y-4">
               <div className="inline-block px-4 py-2 bg-[#91C8E4]/20 rounded-full">
-                <span className="text-[#4682A9] font-semibold text-sm">🏥 Healthcare Platform</span>
+                <span className="text-[#4682A9] font-semibold text-sm">🩺 Medical Professional Portal</span>
               </div>
 
               <h1 className="text-5xl font-bold text-[#2C5F7C] leading-tight">
-                Welcome to Your
-                <span className="text-[#4682A9]"> Health Journey</span>
+                Welcome Back,
+                <span className="text-[#4682A9]"> Doctor</span>
               </h1>
 
               <p className="text-lg text-[#4682A9] leading-relaxed">
-                Connect with top doctors, schedule appointments instantly, and manage your health records all in one place.
+                Access your medical practice dashboard, manage patient appointments, and provide quality healthcare services.
               </p>
             </div>
 
@@ -138,41 +132,41 @@ export default function LoginPage() {
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#91C8E4]/20 rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">100+ Doctors</h3>
-                <p className="text-sm text-[#4682A9]">Expert specialists available</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Patient Management</h3>
+                <p className="text-sm text-[#4682A9]">Comprehensive patient records</p>
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#749BC2]/20 rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">24/7 Support</h3>
-                <p className="text-sm text-[#4682A9]">Round the clock assistance</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Smart Scheduling</h3>
+                <p className="text-sm text-[#4682A9]">Efficient appointment system</p>
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#FFFBDE] rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">Easy Booking</h3>
-                <p className="text-sm text-[#4682A9]">Book in just 2 minutes</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Analytics</h3>
+                <p className="text-sm text-[#4682A9]">Practice insights & reports</p>
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="w-12 h-12 bg-[#91C8E4]/20 rounded-xl flex items-center justify-center mb-3">
                   <svg className="w-6 h-6 text-[#4682A9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-[#2C5F7C] mb-1">10K+ Patients</h3>
-                <p className="text-sm text-[#4682A9]">Trusted by thousands</p>
+                <h3 className="font-semibold text-[#2C5F7C] mb-1">Secure Platform</h3>
+                <p className="text-sm text-[#4682A9]">HIPAA compliant system</p>
               </div>
             </div>
           </div>
@@ -183,21 +177,21 @@ export default function LoginPage() {
 
               {/* Form Header */}
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-[#2C5F7C] mb-2">Sign In</h2>
-                <p className="text-[#4682A9]">Enter your credentials to continue</p>
+                <h2 className="text-3xl font-bold text-[#2C5F7C] mb-2">Doctor Sign In</h2>
+                <p className="text-[#4682A9]">Access your medical practice dashboard</p>
               </div>
 
-              {/* Login Type Toggle */}
+              {/* Patient Login Redirect */}
               <div className="text-center mb-6">
                 <div className="bg-[#91C8E4]/10 border border-[#91C8E4]/20 rounded-xl p-4">
                   <div className="flex items-center justify-center gap-3">
                     <Stethoscope className="w-5 h-5 text-[#4682A9]" />
-                    <span className="text-[#4682A9] font-medium">Are you a doctor?</span>
+                    <span className="text-[#4682A9] font-medium">Are you a patient?</span>
                     <Link
-                      href="/doctor/login"
+                      href="/user/login"
                       className="px-4 py-2 bg-linear-to-r from-[#91C8E4] to-[#4682A9] text-white rounded-lg font-medium hover:from-[#749BC2] hover:to-[#4682A9] transition-all shadow-md hover:shadow-lg text-sm"
                     >
-                      Doctor Login
+                      Patient Login
                     </Link>
                   </div>
                 </div>
@@ -207,26 +201,20 @@ export default function LoginPage() {
                 {/* Email/Mobile Input */}
                 <div>
                   <label htmlFor="emailOrMobile" className="block text-sm font-semibold text-[#2C5F7C] mb-2">
-                    {loginType === 'doctor' ? 'Doctor Email or Mobile' : 'Email or Mobile Number'}
+                    Doctor Email or Mobile Number
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      {loginType === 'doctor' ? (
-                        <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                      ) : (
-                        <svg className="h-5 w-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                      )}
+                      <svg className="w-5 h-5 text-[#91C8E4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                      </svg>
                     </div>
                     <input
                       type="text"
                       id="emailOrMobile"
                       value={emailOrMobile}
                       onChange={(e) => setEmailOrMobile(e.target.value)}
-                      placeholder={loginType === 'doctor' ? 'Enter doctor email or mobile' : 'Enter email or mobile'}
+                      placeholder="Enter your professional email or mobile"
                       disabled={isLoading}
                       required
                       className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#91C8E4] focus:border-transparent placeholder:text-[#91C8E4] bg-white text-[#2C5F7C] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
@@ -244,7 +232,7 @@ export default function LoginPage() {
                       disabled={isLoading}
                       className="w-4 h-4 rounded border-gray-300 text-[#4682A9] focus:ring-[#91C8E4] transition-colors cursor-pointer"
                     />
-                    <span className="text-sm font-medium text-[#4682A9] group-hover:text-[#749BC2] transition-colors">
+                    <span className="text-sm text-[#4682A9] group-hover:text-[#749BC2] transition-colors">
                       Remember me
                     </span>
                   </label>
@@ -263,19 +251,15 @@ export default function LoginPage() {
                   className="w-full bg-linear-to-r from-[#91C8E4] to-[#4682A9] hover:from-[#749BC2] hover:to-[#4682A9] text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isLoading ? (
-                    <div className="flex items-center justify-center">
-                      <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Verifying...
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Signing in...</span>
                     </div>
                   ) : (
                     'Continue with OTP'
                   )}
                 </button>
               </form>
-
 
               {/* Divider */}
               <div className="relative my-8">
@@ -316,7 +300,7 @@ export default function LoginPage() {
               {/* Sign Up Link - Mobile */}
               <div className="text-center mt-8 sm:hidden">
                 <span className="text-[#4682A9] text-sm">Don&apos;t have an account? </span>
-                <Link href="/user/signup" className="text-[#4682A9] hover:text-[#749BC2] font-semibold text-sm transition-colors">
+                <Link href="/doctor/signup" className="text-[#4682A9] hover:text-[#749BC2] font-semibold text-sm transition-colors">
                   Sign Up
                 </Link>
               </div>
