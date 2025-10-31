@@ -116,17 +116,17 @@ const handleSave = async () => {
     return;
   }
 
-  // const patientDetails = {
-  //   appointmentId,
-  //   fullName,
-  //   age: parseInt(age),
-  //   gender,
-  //   mobileNumber,
-  //   weight: parseInt(weight),
-  //   problem,
-  //   relationship,
-  //   addedAt: new Date().toISOString()
-  // };
+  const patientDetails = {
+    appointmentId,
+    fullName,
+    age: parseInt(age),
+    gender,
+    mobileNumber,
+    weight: parseInt(weight),
+    problem,
+    relationship,
+    addedAt: new Date().toISOString()
+  };
 
   try {
     // const res = await fetch('/api/bookings', {
@@ -138,6 +138,18 @@ const handleSave = async () => {
     // });
 
     // if (!res.ok) throw new Error('Failed to update patient details');
+
+    // Save patient details to localStorage for flowing the data to chat page 
+    localStorage.setItem(`patient_data_${appointmentId}`, JSON.stringify(patientDetails));
+    
+    // Also save to a general appointments storage for backup
+    const appointments = JSON.parse(localStorage.getItem('userAppointments') || '[]');
+    const updatedAppointments = appointments.map((apt: Appointment) => 
+      apt.id === appointmentId 
+        ? { ...apt, patientDetails }
+        : apt
+    );
+    localStorage.setItem('userAppointments', JSON.stringify(updatedAppointments));
 
     toast.success('Patient details saved successfully!', {
       duration: 2000,
