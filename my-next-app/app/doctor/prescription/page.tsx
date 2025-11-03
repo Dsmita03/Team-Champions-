@@ -548,7 +548,7 @@ export default function PrescriptionPage() {
           <div className="flex space-x-4 print:hidden">
             <button
               onClick={() => router.back()}
-              className="flex-1 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+              className="flex-1 py-4 border-2 border-gray-900 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>

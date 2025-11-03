@@ -476,12 +476,53 @@ export default function DoctorDashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <Calendar className="w-16 h-16 text-[#91C8E4] mx-auto mb-3" />
-            <p className="text-[#4682A9] font-medium">No appointments scheduled for today</p>
-            <p className="text-sm text-[#4682A9]/70 mt-1">Your schedule is clear</p>
-          </div>
-        )}
+          // <div className="text-center py-12">
+          //   <Calendar className="w-16 h-16 text-[#91C8E4] mx-auto mb-3" />
+          //   <p className="text-[#4682A9] font-medium">No appointments scheduled for today</p>
+          //   <p className="text-sm text-[#4682A9]/70 mt-1">Your schedule is clear</p>
+          // </div>
+ 
+     <div className="space-y-2">
+    {appointments && appointments.length > 0 ? (
+      <div className="bg-linear-to-r from-[#91C8E4]/10 to-[#4682A9]/10 rounded-xl p-4 border border-[#91C8E4]/30">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-semibold text-[#2C5F7C]">Today&lsquo;s Appointments</h4>
+          <span className="inline-flex items-center justify-center w-6 h-6 bg-[#91C8E4] text-white text-xs font-bold rounded-full">
+            {appointments.length}
+          </span>
+        </div>
+        
+        <div className="space-y-2">
+          {appointments.map((apt, index) => (
+            <div key={apt.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-[#91C8E4]/20 hover:shadow-md transition-all">
+              <div className="flex items-center space-x-3">
+                <div className="text-sm font-bold text-[#4682A9] bg-[#91C8E4]/20 w-8 h-8 rounded-full flex items-center justify-center">
+                  {index + 1}
+                </div>
+                <div>
+                  <p className="font-semibold text-[#2C5F7C] text-sm">{apt.patientName}</p>
+                  <p className="text-xs text-[#4682A9]/70">{apt.type}</p>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 bg-[#91C8E4]/20 text-[#4682A9] px-2 py-1 rounded text-xs font-medium">
+                <Clock className="w-3 h-3" />
+                {apt.time}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div className="text-center py-12">
+        <Calendar className="w-16 h-16 text-[#91C8E4] mx-auto mb-3" />
+        <p className="text-[#4682A9] font-medium">No appointments scheduled for today</p>
+        <p className="text-sm text-[#4682A9]/70 mt-1">Your schedule is clear</p>
+      </div>
+    )}
+  </div>
+)
+
+}
 
         {/* View More */}
         <Link href="/doctor/appointments">
@@ -528,7 +569,7 @@ export default function DoctorDashboard() {
           
           <div className="space-y-3">
             <Link
-              href="/doctor/schedule"
+              href="/doctor/appointments"
               className="flex items-center justify-between p-3 bg-white/50 hover:bg-linear-to-r hover:from-[#91C8E4] hover:to-[#749BC2] rounded-xl transition-all group border border-[#91C8E4]/30 hover:border-[#91C8E4] shadow-md hover:shadow-lg"
             >
               <div className="flex items-center space-x-3">

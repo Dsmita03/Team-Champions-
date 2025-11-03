@@ -33,6 +33,13 @@ interface User {
   mobile: string;
 }
 
+interface AvailabilityStatus {
+  status: string;
+  color: string;
+  dotColor: string;
+  slots: number;
+}
+
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -40,6 +47,8 @@ export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [bookingsByDoctor, setBookingsByDoctor] = useState<{ [key: string]: number }>({});
+  const [totalDoctorSlots, setTotalDoctorSlots] = useState<{ [key: string]: number }>({});
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -100,6 +109,43 @@ export default function HomePage() {
 
     fetchData();
   }, [router]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await fetch('/api/bookings');
+        const data = await response.json();
+        
+        if (data.success && data.bookings) {
+          const today = new Date().toISOString().split('T')[0];
+          
+          // Count confirmed bookings per doctor for today
+          const bookingsToday: { [key: string]: number } = {};
+          
+          data.bookings.forEach((booking: any) => {
+            if (booking.status === 'confirmed' && booking.date === today) {
+              bookingsToday[booking.doctorId] = (bookingsToday[booking.doctorId] || 0) + 1;
+            }
+          });
+          
+          setBookingsByDoctor(bookingsToday);
+          
+          // Calculate total available slots per doctor
+          const slots: { [key: string]: number } = {};
+          doctors.forEach(doc => {
+            slots[doc.id] = (doc.availableTimes?.length || 0) * 4; // 4 days of availability
+          });
+          setTotalDoctorSlots(slots);
+        }
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      }
+    };
+
+    if (doctors.length > 0) {
+      fetchBookings();
+    }
+  }, [doctors]);
 
   // Enhanced filtering and sorting logic
   useEffect(() => {
@@ -167,18 +213,56 @@ export default function HomePage() {
     return name.split('.').map(n => n.charAt(0).toUpperCase() + n.slice(1)).join(' ');
   };
 
-  const getAvailabilityStatus = (doctor: Doctor) => {
-    if (!doctor.availableDates || doctor.availableDates.length === 0) {
-      return { status: 'Not Available', color: 'bg-gray-100 text-gray-700', dotColor: 'bg-gray-400' };
-    }
-    
+  const getAvailabilityStatus = (doctor: Doctor): AvailabilityStatus => {
     const today = new Date().toISOString().split('T')[0];
+    const bookingsCount = bookingsByDoctor[doctor.id] || 0;
+    const totalSlots = totalDoctorSlots[doctor.id] || 0;
+    const maxBookingsPerDay = Math.ceil((doctor.availableTimes?.length || 4) * 2);
+    
+    // If doctor has no available dates
+    if (!doctor.availableDates || doctor.availableDates.length === 0) {
+      return { 
+        status: 'Not Available', 
+        color: 'bg-gray-100 text-gray-700', 
+        dotColor: 'bg-gray-400',
+        slots: 0
+      };
+    }
+
+    // Check if today is available
     const isAvailableToday = doctor.availableDates.includes(today);
     
-    if (isAvailableToday) {
-      return { status: 'Available today', color: 'bg-green-100 text-green-700', dotColor: 'bg-green-500' };
+    if (!isAvailableToday) {
+      return { 
+        status: 'Available soon', 
+        color: 'bg-yellow-100 text-yellow-700', 
+        dotColor: 'bg-yellow-500',
+        slots: totalSlots - bookingsCount
+      };
+    }
+
+    // Check today's booking status
+    if (bookingsCount >= maxBookingsPerDay) {
+      return { 
+        status: 'Fully Booked Today', 
+        color: 'bg-red-100 text-red-700', 
+        dotColor: 'bg-red-500',
+        slots: 0
+      };
+    } else if (bookingsCount > 0) {
+      return { 
+        status: 'Limited Slots Today', 
+        color: 'bg-orange-100 text-orange-700', 
+        dotColor: 'bg-orange-500',
+        slots: maxBookingsPerDay - bookingsCount
+      };
     } else {
-      return { status: 'Available soon', color: 'bg-yellow-100 text-yellow-700', dotColor: 'bg-yellow-500' };
+      return { 
+        status: 'Available today', 
+        color: 'bg-green-100 text-green-700', 
+        dotColor: 'bg-green-500',
+        slots: maxBookingsPerDay
+      };
     }
   };
 
@@ -411,6 +495,9 @@ export default function HomePage() {
                               <span className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${availability.color}`}>
                                 <span className={`w-2 h-2 ${availability.dotColor} rounded-full mr-2`}></span>
                                 {availability.status}
+                                {availability.slots > 0 && availability.status !== 'Available soon' && (
+                                  <span className="ml-1.5 font-bold">({availability.slots} slots)</span>
+                                )}
                               </span>
                               {doctor.location && (
                                 <span className="inline-flex items-center text-xs text-[#4682A9] bg-[#91C8E4]/10 px-3 py-1 rounded-full">
@@ -463,11 +550,10 @@ export default function HomePage() {
                           </div>
                           
                           <div className="flex gap-3">
-                            
                             <Link href={`/user/doctors/${doctor.id}`}>
-                            <button className="px-4 py-2 bg-[#91C8E4]/10 hover:bg-[#91C8E4]/20 text-[#4682A9] font-medium rounded-lg transition-all duration-300 border border-[#91C8E4]/30 text-sm">
-                             View Profile
-                            </button>
+                              <button className="px-4 py-2 bg-[#91C8E4]/10 hover:bg-[#91C8E4]/20 text-[#4682A9] font-medium rounded-lg transition-all duration-300 border border-[#91C8E4]/30 text-sm">
+                                View Profile
+                              </button>
                             </Link>
 
                             <Link
