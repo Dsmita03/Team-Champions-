@@ -537,6 +537,40 @@
         "paidAt": "2025-11-03T12:45:59.752Z",
         "amount": 1300
       }
+    },
+    {
+      "id": "1762268605997",
+      "doctorId": "doc3",
+      "doctorName": "Dr. Amit Patel",
+      "speciality": "Pediatrician",
+      "date": "2025-11-14",
+      "time": "15:30",
+      "patientName": "ds",
+      "patientPhone": "9876543212",
+      "patientEmail": "sarah.williams@email.com",
+      "notes": "cold",
+      "price": 1200,
+      "status": "confirmed",
+      "paymentStatus": "paid",
+      "createdAt": "2025-11-04T15:03:25.997Z",
+      "patientDetails": {
+        "fullName": "ds",
+        "age": 22,
+        "gender": "Female",
+        "mobileNumber": "9876543212",
+        "weight": 43,
+        "problem": "cold",
+        "relationship": "Sister",
+        "addedAt": "2025-11-04T15:04:01.230Z"
+      },
+      "updatedAt": "2025-11-04T15:04:22.797Z",
+      "paymentDetails": {
+        "cardType": "Visa",
+        "lastFourDigits": "   1",
+        "cardholderName": "deb",
+        "paidAt": "2025-11-04T15:04:22.779Z",
+        "amount": 1200
+      }
     }
   ],
   "prescriptions": [

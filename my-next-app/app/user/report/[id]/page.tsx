@@ -205,7 +205,7 @@ export default function UserPrescriptionPage() {
                   <Stethoscope className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-[#4682A9]">Dr. {prescription.doctorName}</h1>
+                  <h1 className="text-2xl font-bold text-[#4682A9]">{prescription.doctorName}</h1>
                   <p className="text-[#749BC2] font-semibold text-lg">{prescription.speciality || 'General Physician'}</p>
                   <p className="text-gray-600 text-sm mt-1">Reg. No: MED-{prescription.doctorId.slice(0, 8).toUpperCase()}</p>
                 </div>
