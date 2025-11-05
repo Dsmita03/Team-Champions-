@@ -324,7 +324,8 @@ export default function AppointmentHistoryPage() {
 
 
       {/* Appointments List */}
-      <div className="flex-1 px-3 py-5">
+      {/* <div className="flex-1 px-3 py-5"> */}
+      <div className="flex-1 px-3 py-5 pb-24">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-[60vh]">
             <div className="w-12 h-12 border-4 border-[#91C8E4] border-t-transparent rounded-full animate-spin"></div>

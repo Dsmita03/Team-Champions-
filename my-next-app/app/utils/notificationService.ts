@@ -124,7 +124,7 @@ export class NotificationService {
     return this.createNotification({
       type: 'success',
       title: 'New Prescription Available',
-      message: `Dr. ${doctorName} has prescribed ${medicationNames} for you. Check your prescriptions for details.`,
+      message: `${doctorName} has prescribed ${medicationNames} for you. Check your prescriptions for details.`,
       recipientId: userId,
       recipientType: 'user',
       relatedId: prescription.id,
@@ -171,8 +171,8 @@ export class NotificationService {
       : 'Upcoming Appointment Reminder';
     
     const message = reminderType === 'doctor_reminder'
-      ? `Dr. ${doctorName} has sent you a reminder for your appointment on ${appointment.date} at ${appointment.time}`
-      : `Don't forget your appointment with Dr. ${doctorName} on ${appointment.date} at ${appointment.time}`;
+      ? `${doctorName} has sent you a reminder for your appointment on ${appointment.date} at ${appointment.time}`
+      : `Don't forget your appointment with ${doctorName} on ${appointment.date} at ${appointment.time}`;
 
     return this.createNotification({
       type: 'info',

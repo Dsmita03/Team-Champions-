@@ -39,7 +39,7 @@ export default function BottomNavigation({ activeTab = 'home' }: BottomNavigatio
 
           {/* Records */}
           <Link 
-            href="/records" 
+            href="/user/records" 
             className={`flex flex-col items-center space-y-0.5 sm:space-y-1 min-w-0 ${
               activeTab === 'records' ? 'text-[#4FC3F7]' : 'text-gray-600 hover:text-[#4FC3F7]'
             }`}
