@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     const appointmentId = searchParams.get('appointmentId')
     const id = searchParams.get('id')
 
-    console.log('🔍 GET /api/medical-records', { patientEmail, doctorId, type })
+    console.log('GET /api/medical-records', { patientEmail, doctorId, type })
 
     // Fetch from Redis (primary storage)
     let records: MedicalRecord[] = []
@@ -79,11 +79,11 @@ export async function GET(request: NextRequest) {
         records = data
       }
     } catch (err) {
-      console.warn('❌ Error reading from Redis:', err)
+      console.warn('Error reading from Redis:', err)
       records = []
     }
 
-    console.log(`📊 Found ${records.length} total records`)
+    console.log(`Found ${records.length} total records`)
 
     // Apply filters
     records = applyFilters(records, { patientEmail, doctorId, type, appointmentId, id })
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
 
-    console.log(`✅ Returning ${records.length} filtered records`)
+    console.log(`Returning ${records.length} filtered records`)
 
     return NextResponse.json({
       success: true,
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
       count: records.length
     })
   } catch (error) {
-    console.error('❌ Error reading medical records:', error)
+    console.error('Error reading medical records:', error)
     return NextResponse.json({
       success: false,
       message: 'Failed to read medical records',
@@ -115,7 +115,7 @@ export async function POST(req: Request) {
   try {
     const recordData = await req.json()
 
-    console.log('📝 POST /api/medical-records', recordData.title)
+    console.log('POST /api/medical-records', recordData.title)
 
     let records: MedicalRecord[] = []
     try {
@@ -162,7 +162,7 @@ export async function POST(req: Request) {
     records.push(record)
     await redis.set('medical_records', JSON.stringify(records))
 
-    console.log(`✅ Record saved. Total records: ${records.length}`)
+    console.log(` Record saved. Total records: ${records.length}`)
 
     // Invalidate cache for this patient
     try {
@@ -170,9 +170,9 @@ export async function POST(req: Request) {
       if (record.doctorId) {
         await redis.del(`medical_records:${record.doctorId}`)
       }
-      console.log('🗑️ Cache invalidated')
+      console.log('Cache invalidated')
     } catch (cacheError) {
-      console.warn('⚠️ Failed to invalidate cache:', cacheError)
+      console.warn('Failed to invalidate cache:', cacheError)
     }
 
     return NextResponse.json({
@@ -181,7 +181,7 @@ export async function POST(req: Request) {
       record
     }, { status: 201 })
   } catch (error) {
-    console.error('❌ Error creating medical record:', error)
+    console.error('Error creating medical record:', error)
     return NextResponse.json({
       success: false,
       message: 'Failed to create medical record',
@@ -196,7 +196,7 @@ export async function PATCH(req: Request) {
     const updates = await req.json()
     const { id, patientEmail, doctorId } = updates
 
-    console.log('✏️ PATCH /api/medical-records', id)
+    console.log('PATCH /api/medical-records', id)
 
     if (!id) {
       return NextResponse.json({
@@ -243,7 +243,7 @@ export async function PATCH(req: Request) {
 
     await redis.set('medical_records', JSON.stringify(updatedRecords))
 
-    console.log('✅ Record updated successfully')
+    console.log('Record updated successfully')
 
     // Invalidate cache
     try {
@@ -254,7 +254,7 @@ export async function PATCH(req: Request) {
         await redis.del(`medical_records:${doctorId}`)
       }
     } catch (cacheError) {
-      console.warn('⚠️ Failed to invalidate cache:', cacheError)
+      console.warn('Failed to invalidate cache:', cacheError)
     }
 
     return NextResponse.json({
@@ -263,7 +263,7 @@ export async function PATCH(req: Request) {
       record: updatedRecord
     }, { status: 200 })
   } catch (error) {
-    console.error('❌ Error updating medical record:', error)
+    console.error('Error updating medical record:', error)
     return NextResponse.json({
       success: false,
       message: 'Failed to update medical record'
@@ -279,7 +279,7 @@ export async function DELETE(request: NextRequest) {
     const patientEmail = searchParams.get('patientEmail')
     const doctorId = searchParams.get('doctorId')
 
-    console.log('🗑️ DELETE /api/medical-records', id)
+    console.log('DELETE /api/medical-records', id)
 
     if (!id) {
       return NextResponse.json({
@@ -312,7 +312,7 @@ export async function DELETE(request: NextRequest) {
 
     await redis.set('medical_records', JSON.stringify(records))
 
-    console.log(`✅ Record deleted. Remaining records: ${records.length}`)
+    console.log(` Record deleted. Remaining records: ${records.length}`)
 
     // Invalidate cache
     try {
@@ -323,7 +323,7 @@ export async function DELETE(request: NextRequest) {
         await redis.del(`medical_records:${doctorId}`)
       }
     } catch (cacheError) {
-      console.warn('⚠️ Failed to invalidate cache:', cacheError)
+      console.warn('Failed to invalidate cache:', cacheError)
     }
 
     return NextResponse.json({
@@ -331,7 +331,7 @@ export async function DELETE(request: NextRequest) {
       message: 'Medical record deleted successfully'
     }, { status: 200 })
   } catch (error) {
-    console.error('❌ Error deleting medical record:', error)
+    console.error('Error deleting medical record:', error)
     return NextResponse.json({
       success: false,
       message: 'Failed to delete medical record'

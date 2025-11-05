@@ -1,4 +1,3 @@
- 
 import { Redis } from '@upstash/redis'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -27,30 +26,31 @@ interface MedicalRecord {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const recordId = params.id
+    const { id: recordId } = await context.params
+    const cacheKey = `medical_record:${recordId}`
 
     // Check cache first
-    const cacheKey = `medical_record:${recordId}`
     try {
-      const cachedRecord = await redis.get(cacheKey)
-      if (cachedRecord) {
-        console.log(`Cache hit for record: ${recordId}`)
+      const cached = await redis.get(cacheKey)
+      if (cached) {
+        const record = typeof cached === 'string' ? JSON.parse(cached) : cached
         return NextResponse.json({
           success: true,
-          record: JSON.parse(cachedRecord as string),
+          record,
           source: 'cache'
         })
       }
-    } catch (cacheError) {
-      console.warn('Cache read error:', cacheError)
+    } catch (err) {
+      console.warn("Cache read error:", err)
     }
 
-    // Fetch from Redis
-    const records = (await redis.get('medical_records')) as MedicalRecord[] || []
-    const record = records.find((r: MedicalRecord) => r.id === recordId)
+    // Fetch full list from Redis
+    const data = await redis.get('medical_records')
+    const records: MedicalRecord[] = typeof data === 'string' ? JSON.parse(data) : (data || [])
+    const record = records.find(r => r.id === recordId)
 
     if (!record) {
       return NextResponse.json({
@@ -59,12 +59,8 @@ export async function GET(
       }, { status: 404 })
     }
 
-    // Cache the record
-    try {
-      await redis.setex(cacheKey, 600, JSON.stringify(record)) // 10 min cache
-    } catch (cacheError) {
-      console.warn('Failed to cache record:', cacheError)
-    }
+    // Store record in cache for 10 min
+    await redis.set(cacheKey, JSON.stringify(record), { ex: 600 })
 
     return NextResponse.json({
       success: true,
