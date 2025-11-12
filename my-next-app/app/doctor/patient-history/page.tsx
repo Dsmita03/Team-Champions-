@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Calendar, User, Pill, Clock, FileText, Phone, Mail, MapPin } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Pill, Clock, FileText} from 'lucide-react';
 
 interface PatientHistory {
   patientInfo: {
@@ -35,7 +35,7 @@ interface PatientHistory {
   }>;
 }
 
-export default function PatientHistoryPage() {
+function PatientHistoryContent() {
   const [patientHistory, setPatientHistory] = useState<PatientHistory | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -365,5 +365,20 @@ export default function PatientHistoryPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function PatientHistoryPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-linear-to-br from-[#E8F4F8] via-[#F0F9FF] to-[#91C8E4]/20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#91C8E4] border-t-transparent mx-auto mb-4"></div>
+          <p className="text-[#4682A9] font-semibold text-lg">Loading patient history...</p>
+        </div>
+      </div>
+    }>
+      <PatientHistoryContent />
+    </Suspense>
   );
 }

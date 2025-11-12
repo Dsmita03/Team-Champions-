@@ -688,35 +688,33 @@ export async function GET() {
   try {
     console.log('Seeding Redis with all data...')
 
-    // Seed all raw data
-    await redis.set('users', JSON.stringify(seedData.users))
-    await redis.set('doctors', JSON.stringify(seedData.doctors))
-    await redis.set('bookings', JSON.stringify(seedData.bookings))
-    await redis.set('prescriptions', JSON.stringify(seedData.prescriptions))
-
-    // Generate and seed medical records
-    const medicalRecords = generateMedicalRecords(seedData)
-    await redis.set('medical_records', JSON.stringify(medicalRecords))
-
-    // Seed feedback data
-    console.log('Seeding feedback data...')
-    
-    // Store individual feedback in hash
-    for (const feedback of seedData.feedbacks) {
-      await redis.hset('feedbacks', { [feedback.id]: JSON.stringify(feedback) })
-      
-      // Also add to doctor-specific feedback set
-      const doctorFeedbackKey = `doctor_feedbacks:${feedback.doctorId}`
-      await redis.sadd(doctorFeedbackKey, feedback.id)
+    // Prepare data object to match your API structure
+    const dataObject = {
+      users: seedData.users,
+      doctors: seedData.doctors,
+      bookings: seedData.bookings,
+      prescriptions: seedData.prescriptions,
+      feedbacks: seedData.feedbacks,
+      medical_records: generateMedicalRecords(seedData)
     }
 
+    // Seed as single 'data' key (matching your feedback API pattern)
+    await redis.set('data', dataObject)
+
+    // Also seed individual keys for backward compatibility
+    await redis.set('users', seedData.users)
+    await redis.set('doctors', seedData.doctors)
+    await redis.set('bookings', seedData.bookings)
+    await redis.set('prescriptions', seedData.prescriptions)
+    await redis.set('medical_records', dataObject.medical_records)
+
     // Statistics
-    const recordsByType = medicalRecords.reduce((acc: any, rec) => {
+    const recordsByType = dataObject.medical_records.reduce((acc: any, rec) => {
       acc[rec.type] = (acc[rec.type] || 0) + 1
       return acc
     }, {})
 
-    const recordsByPatient = medicalRecords.reduce((acc: any, rec) => {
+    const recordsByPatient = dataObject.medical_records.reduce((acc: any, rec) => {
       acc[rec.patientEmail] = (acc[rec.patientEmail] || 0) + 1
       return acc
     }, {})
@@ -734,7 +732,7 @@ export async function GET() {
         doctors: seedData.doctors.length,
         bookings: seedData.bookings.length,
         prescriptions: seedData.prescriptions.length,
-        medicalRecords: medicalRecords.length,
+        medicalRecords: dataObject.medical_records.length,
         feedbacks: seedData.feedbacks.length,
         recordsByType,
         recordsByPatient,
@@ -757,18 +755,12 @@ export async function POST() {
 
 export async function DELETE() {
   try {
+    await redis.del('data')
     await redis.del('users')
     await redis.del('doctors')
     await redis.del('bookings')
     await redis.del('prescriptions')
     await redis.del('medical_records')
-    await redis.del('feedbacks')
-
-    // Clear doctor-specific feedback sets
-    const doctorIds = ['doc1', 'doc2', 'doc3'] // Based on seed data
-    for (const doctorId of doctorIds) {
-      await redis.del(`doctor_feedbacks:${doctorId}`)
-    }
 
     return NextResponse.json({
       success: true,

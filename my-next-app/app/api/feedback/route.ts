@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 interface FeedbackData {
   id: string;
@@ -20,24 +22,29 @@ interface FeedbackData {
   status: string;
 }
 
-const DATA_FILE_PATH = path.join(process.cwd(), 'app', 'data', 'data.json');
+interface DataStore {
+  feedbacks?: FeedbackData[];
+  users?: Array<{ email: string; name: string; [key: string]: any }>;
+  bookings?: Array<{ patientEmail: string; patientName: string; [key: string]: any }>;
+  appointments?: Array<{ patientEmail: string; patientName: string; [key: string]: any }>;
+}
 
-async function readDataFile() {
+async function readDataFile(): Promise<DataStore> {
   try {
-    const fileContents = await fs.readFile(DATA_FILE_PATH, 'utf8');
-    return JSON.parse(fileContents);
+    const data = (await redis.get('data')) as DataStore || { feedbacks: [] };
+    return data;
   } catch (error) {
-    console.error('Error reading data file:', error);
+    console.error('Error reading data from Redis:', error);
     return { feedbacks: [] };
   }
 }
 
-async function writeDataFile(data: any) {
+async function writeDataFile(data: DataStore): Promise<boolean> {
   try {
-    await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2));
+    await redis.set('data', data);
     return true;
   } catch (error) {
-    console.error('Error writing data file:', error);
+    console.error('Error writing data to Redis:', error);
     return false;
   }
 }
@@ -82,7 +89,7 @@ export async function POST(request: NextRequest) {
     if (!patientName || patientName === 'Unknown Patient') {
       // First, look for patient name in users table
       if (data.users && Array.isArray(data.users)) {
-        const user = data.users.find((u: any) => 
+        const user = data.users.find((u) => 
           u.email === patientEmail && u.name && u.name !== 'Unknown Patient'
         );
         if (user && user.name) {
@@ -92,7 +99,7 @@ export async function POST(request: NextRequest) {
       
       // If not found in users, look in bookings
       if (finalPatientName === 'Unknown Patient' && data.bookings && Array.isArray(data.bookings)) {
-        const booking = data.bookings.find((b: any) => 
+        const booking = data.bookings.find((b) => 
           b.patientEmail === patientEmail && b.patientName && b.patientName !== 'Unknown Patient'
         );
         if (booking && booking.patientName) {
@@ -102,7 +109,7 @@ export async function POST(request: NextRequest) {
       
       // If still not found, look in appointments
       if (finalPatientName === 'Unknown Patient' && data.appointments && Array.isArray(data.appointments)) {
-        const appointment = data.appointments.find((a: any) => 
+        const appointment = data.appointments.find((a) => 
           a.patientEmail === patientEmail && a.patientName && a.patientName !== 'Unknown Patient'
         );
         if (appointment && appointment.patientName) {
@@ -133,7 +140,7 @@ export async function POST(request: NextRequest) {
     // Add feedback to data
     data.feedbacks.push(feedback);
 
-    // Save data back to file
+    // Save data back to Redis
     const saveSuccess = await writeDataFile(data);
     
     if (!saveSuccess) {
