@@ -174,7 +174,7 @@ export default function DoctorFeedbackPage() {
           
           return (
             <div key={rating} className="flex items-center space-x-3">
-              <span className="text-sm font-medium w-8">{rating}★</span>
+              <span className="text-sm font-medium w-8 text-black">{rating}★</span>
               <div className="flex-1 bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-yellow-400 h-2 rounded-full transition-all duration-500"
@@ -286,7 +286,7 @@ export default function DoctorFeedbackPage() {
                   placeholder="Search by patient name or comments..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4FC3F7] focus:border-transparent"
+                  className="w-full pl-10 text-black pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4FC3F7] focus:border-transparent"
                 />
               </div>
             </div>
@@ -357,7 +357,7 @@ export default function DoctorFeedbackPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4FC3F7] focus:border-transparent font-medium"
+              className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4FC3F7] focus:border-transparent font-medium text-black"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
